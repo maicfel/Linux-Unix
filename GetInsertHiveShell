@@ -1,0 +1,26 @@
+### 1 - Inserting select tab 1 to tab 2 dynamically as the references passed in the parameter "execref" ###
+
+#!bin/bash
+
+_varpath_=/home/maicfel
+execref='2021-02-03 2021-02-04 2021-02-05 2021-02-06 2021-02-07 2021-02-08'
+
+for getfill in ${execref};
+do
+  hive --hivevar varhql=$getfill -f ${_varpath_}/GetLoad.hql
+  echo "'$getfill'"
+done
+  
+
+########################### 2 - Create a separate hql file with the code below called GetLoad.hql #########
+insert into nomedb.tab1 partition (vardate = '${hivevar:varhql}')
+(
+var1,
+var2,
+var3
+)
+select
+var1,
+var2,
+var3
+from nomedb.tab2 where vardate = '${hivevar:varhql}';
